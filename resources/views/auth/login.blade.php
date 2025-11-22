@@ -20,18 +20,14 @@
   <!-- Left: Carousel -->
   <div class="w-full md:w-1/2 hidden md:flex flex-col items-center justify-center bg-gradient-to-br from-pink-400 via-yellow-300 to-indigo-400 p-4 md:p-6 relative">
       <div class="w-full h-[300px] sm:h-[400px] md:h-[500px] relative overflow-hidden rounded-2xl shadow-lg carousel">
-          <img src="{{ asset('images/carousel/picture1.png') }}" class="w-full h-full object-cover rounded-2xl absolute top-0 left-0 active" alt="Painting 1">
-          <img src="{{ asset('images/carousel/picture2.png') }}" class="w-full h-full object-cover rounded-2xl absolute top-0 left-0" alt="Painting 2">
-          <img src="{{ asset('images/carousel/picture3.png') }}" class="w-full h-full object-cover rounded-2xl absolute top-0 left-0" alt="Painting 3">
-          <img src="{{ asset('images/carousel/picture4.png') }}" class="w-full h-full object-cover rounded-2xl absolute top-0 left-0" alt="Painting 4">
-          <img src="{{ asset('images/carousel/picture5.png') }}" class="w-full h-full object-cover rounded-2xl absolute top-0 left-0" alt="Painting 5">
+          @for ($i = 1; $i <= 5; $i++)
+              <img src="{{ asset("images/carousel/picture$i.png") }}" class="w-full h-full object-cover rounded-2xl absolute top-0 left-0 {{ $i === 1 ? 'active' : '' }}" alt="Painting {{ $i }}">
+          @endfor
       </div>
       <div class="flex justify-center mt-4 space-x-2 carousel-dots">
-          <button class="bg-white opacity-50 rounded-full"></button>
-          <button class="bg-white opacity-50 rounded-full"></button>
-          <button class="bg-white opacity-50 rounded-full"></button>
-          <button class="bg-white opacity-50 rounded-full"></button>
-          <button class="bg-white opacity-50 rounded-full"></button>
+          @for ($i = 1; $i <= 5; $i++)
+              <button class="bg-white opacity-50 rounded-full"></button>
+          @endfor
       </div>
       <h2 class="text-white text-2xl sm:text-3xl font-bold mt-6 text-center">Welcome to iPaint</h2>
       <p class="text-white text-center mt-2 text-sm sm:text-base">Explore beautiful artworks and find your inspiration.</p>
@@ -39,15 +35,23 @@
 
   <!-- Right: Login Form -->
   <div class="w-full md:w-1/2 p-6 sm:p-8 md:p-10">
-      <form action="#" method="POST" class="space-y-6">
+      <form action="{{ route('login.submit') }}" method="POST" class="space-y-6">
           @csrf
           <div class="flex justify-center mb-4">
               <img src="{{ asset('images/carousel/logo.png') }}" alt="iPaint Logo" class="w-20 h-20 sm:w-24 sm:h-24 object-contain">
           </div>
+
+          @if($errors->any())
+              <div class="text-red-500 text-sm mb-2">
+                  {{ $errors->first() }}
+              </div>
+          @endif
+
           <div class="relative floating-label">
-              <input type="text" name="email" id="email" placeholder=" " required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition duration-300">
-              <label for="email">Email or Username</label>
+              <input type="text" name="username" id="username" placeholder="" value="{{ old('username') }}" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition duration-300">
+              <label for="username">Email or Username</label>
           </div>
+
           <div class="relative floating-label">
               <input type="password" name="password" id="password" placeholder=" " required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition duration-300">
               <label for="password">Password</label>
@@ -61,18 +65,23 @@
                   </svg>
               </button>
           </div>
+
           <div class="text-left text-sm text-pink-500 font-semibold">
               <a href="{{ route('password.request') }}" class="hover:text-pink-700 transition duration-300">Forgot Password?</a>
           </div>
+
           <button type="submit" class="w-full bg-gradient-to-r from-pink-400 via-yellow-300 to-indigo-400 hover:from-pink-500 hover:via-yellow-400 hover:to-indigo-500 text-white font-semibold py-3 rounded-lg transition duration-500">Login</button>
+
           <div class="flex items-center my-4">
               <hr class="flex-grow border-t border-gray-300">
               <span class="mx-2 text-gray-500 font-semibold">or</span>
               <hr class="flex-grow border-t border-gray-300">
           </div>
+
           <a href="#" class="w-full inline-flex justify-center items-center bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold py-3 rounded-lg shadow-sm transition duration-300">
               <img src="{{ asset('images/carousel/goole-logo.png') }}" alt="Google" class="w-6 h-6 mr-2"> Login with Google
           </a>
+
           <p class="text-center mt-6 text-gray-700">
               Don't have an account yet?
               <a href="{{ route('register') }}" class="text-pink-500 font-semibold hover:text-pink-700 transition duration-300">Register</a>
@@ -82,7 +91,6 @@
 </div>
 
 <script>
-// Carousel logic
 const slides = document.querySelectorAll('.carousel img');
 const dots = document.querySelectorAll('.carousel-dots button');
 let current = 0;
@@ -98,7 +106,6 @@ dots.forEach((dot,i)=>{dot.addEventListener('click',()=>{current=i; showSlide(cu
 setInterval(()=>{current=(current+1)%slides.length; showSlide(current);},3000);
 showSlide(current);
 
-// Password toggle
 const passwordInput = document.getElementById('password');
 const toggleBtn = document.getElementById('togglePassword');
 const eyeOpen = document.getElementById('eyeOpen');
@@ -110,6 +117,5 @@ toggleBtn.addEventListener('click', ()=>{
     eyeClosed.classList.toggle('hidden');
 });
 </script>
-
 </body>
 </html>
